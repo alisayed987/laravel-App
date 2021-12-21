@@ -16,4 +16,7 @@ class AreaFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->name(),
-            'city_id' => $this->faker->numberBetw
+            'city_id' => $this->faker->numberBetween(1, 3)
+        ];
+    }
+}
