@@ -14,9 +14,13 @@ class AddressFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->name(),
-            'user_id' => $this->faker->numberBetween(1, 3),
-            'area_id' => $this->faker->numberBetween(1, 3)
+            'street' => $this->faker->unique()->name(),
+            'building_num' => $this->faker->name(),
+            'floor' =>  $this->faker->name(),
+            'apartment_num' =>  $this->faker->name(),
+            'user_id' =>  $this->faker->numberBetween(1, 3),
+            'area_id' =>  $this->faker->numberBetween(1, 3),
+
         ];
     }
 }

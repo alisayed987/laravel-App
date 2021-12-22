@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Area;
 use App\Models\Address;
 use Illuminate\Database\Seeder;
+use Prophecy\Call\Call;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,7 +23,8 @@ class DatabaseSeeder extends Seeder
         State::factory(5)->create();
         City::factory(5)->create();
         Area::factory(10)->create();
-        Address::factory(5)->create();
+        // Address::factory(5)->create();
+        $this->call([AddressSeeder::class]);
         // $this->call([
         //     UserSeeder::class,
         //     StateSeeder::class,
