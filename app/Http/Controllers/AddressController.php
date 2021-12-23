@@ -8,52 +8,51 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use stdClass;
 
+
 class AddressController extends Controller
 {
-    public function getaddress($address_id)
+    public function getAddress($address_id)
     {
-        $addresses = Address::select(['*'])->where('id', $address_id)->get();
-        $address_list = array();
-        foreach ($addresses as $address) {
-            $address_list[] = ($address['building_num'] . ' ' . $address['street'] . ' ,' . $address['floor'] . ' ,' . $address['apartment_num']);
+        $address = Address::where('id', $address_id)->get();
+        if ($address->isEmpty()) {
+            return response()->json(['found' => false]);
         }
-        return $address_list;
+        $add = $address[0];
+        $concat = (!($add['building_num']) ? $add['street'] : ($add['building_num'] . ' ' . $add['street'])) .
+            (!($add['floor']) ? '' : ' ,floor: ' . $add['floor']) .
+            (!($add['apartment_num']) ? '' : ' ,apartment: ' . $add['apartment_num']);
+        return response()->json(['found' => true, 'addresses' => $concat]);
     }
     public function getUserAddresses($user_id)
     {
-        $user_addresses = Address::select(['street', 'building_num', 'floor', 'apartment_num'])->where('user_id', $user_id)->get();
-        $address_list = array();
-        foreach ($user_addresses as $user_address) {
-            $address_list[] = ($user_address['building_num'] . ' ' . $user_address['street'] . ' ,' . $user_address['floor'] . ' ,' . $user_address['apartment_num']);
+        $user_addresses = Address::where('user_id', $user_id)->get();
+        if ($user_addresses->isEmpty()) {
+            $res = ['found' => false];
+            return response($res);
         }
-        return ($address_list);
+        $res = ['found' => true, 'address_list' => $user_addresses];
+        return response()->json($res);
     }
     public function deleteAddress($address_id)
     {
-        $deleted = Address::select(['*'])->where('id', $address_id)->delete();
-        return $deleted;
+        $deleted = Address::where('id', $address_id)->delete();
+        return response($deleted);
     }
     public function createAddress(Request $request)
     {
         //----Check if user exists-----------------------
         $user_email = $request->input('email');
-        $user_exists = User::select('id')->where('email', $user_email)->get();
-        if (!count($user_exists)) {
-            return "user does not exist";
+        $user_exists = User::where('email', $user_email)->get();
+        if ($user_exists->isEmpty()) {
+            return response()
+                ->json(['saved' => false, 'message' => "user does not exist"]);
         }
         //----Check if area exists-----------------------
         $area = $request->input('area');
-        $area_exists = Area::select('id')->where('name', $area)->get();
-        if (!count($area_exists)) {
-            return "area does not exist";
-        }
-        //----Check if Address already exists-------------
-        $duplicated_addresses = Address::where('addresses.street', '=', $request->input('street'))
-            ->where('addresses.building_num', '=', $request->input('building'))
-            ->where('addresses.floor', '=', $request->input('floor'))
-            ->where('addresses.apartment_num', '=', $request->input('apt'))->get();
-        if (count($duplicated_addresses)) {
-            return "address already exists";
+        $area_exists = Area::where('name', $area)->get();
+        if (($area_exists->isEmpty())) {
+            return response()
+                ->json(['saved' => false, 'message' => "area does not exist"]);
         }
         //----Create new Address----------------------------
         $address = new Address;
@@ -61,14 +60,11 @@ class AddressController extends Controller
         $address->building_num = $request->input('building');
         $address->floor = $request->input('floor');
         $address->apartment_num = $request->input('apt');
-        $address->user_id = $user_exists[0]['id'];
-        $address->area_id = $area_exists[0]['id'];
+        $address->user_id = $user_exists[0]['id']; // ???
+        $address->area_id = $area_exists[0]['id']; // ???
         $check = $address->save();
-        //--------------------------------------------------
-        $created_address = new stdClass();
-        $created_address->new_address = $address;
-        $created_address->is_address_created = $check;
 
-        return $created_address;
+        return response()
+            ->json(['saved' => true, 'created_address' => $address]);
     }
 }

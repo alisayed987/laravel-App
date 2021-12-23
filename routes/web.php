@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AddressController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +17,3 @@ use App\Http\Controllers\AddressController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('address/{address_id}', [AddressController::class, 'getaddress']);
-Route::get('/user/address/{user_id}', [AddressController::class, 'getUserAddresses']);
-Route::get('/deleteaddress/{address_id}', [AddressController::class, 'deleteAddress']);
-Route::post('/createaddress', [AddressController::class, 'createAddress']);
