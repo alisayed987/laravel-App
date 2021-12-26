@@ -39,11 +39,13 @@ class CheckOldAddress extends Command
      */
     public function handle()
     {
-        foreach (Address::where('isOld', false) as $address) {
-            if (Carbon::parse($address['created_at'])->diffInMinutes(Carbon::now()) >= 60) {
-                $address['isOld'] = true;
-                $address->save();
+        $cutoffTime = env('CHECK_OLD_ADDRESS');
+        if (isset($cutoffTime))
+            foreach (Address::where('isOld', false) as $address) {
+                if (Carbon::parse($address['created_at'])->diffInMinutes(Carbon::now()) >= $cutoffTime) {
+                    $address['isOld'] = true;
+                    $address->save();
+                }
             }
-        }
     }
 }
