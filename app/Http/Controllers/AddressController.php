@@ -14,18 +14,18 @@ class AddressController extends Controller
     {
         $add = Address::where('id', $address_id)->first();
         if (!isset($add)) {
-            return response()->json(['found' => false], 404);
+            return response()->json(['found' => false, 'address' => ''], 404);
         }
         $concat = (!($add['building_num']) ? $add['street'] : ($add['building_num'] . ' ' . $add['street'])) .
             (!($add['floor']) ? '' : ' ,floor: ' . $add['floor']) .
             (!($add['apartment_num']) ? '' : ' ,apartment: ' . $add['apartment_num']);
-        return response()->json(['found' => true, 'addresses' => $concat], 200);
+        return response()->json(['found' => true, 'address' => $concat], 200);
     }
     public function getUserAddresses($user_id)
     {
         $user_addresses = Address::where('user_id', $user_id)->get();
         if ($user_addresses->isEmpty()) {
-            $res = ['found' => false];
+            $res = ['found' => false, 'address_list' => []];
             return response($res, 404);
         }
         $res = ['found' => true, 'address_list' => $user_addresses];
@@ -52,14 +52,14 @@ class AddressController extends Controller
         $user_exists = User::where('email', $user_email)->first();
         if (!isset($user_exists)) {
             return response()
-                ->json(['saved' => false, 'message' => "user does not exist"], 404);
+                ->json(['saved' => false, 'created_address' => null, 'message' => "user does not exist"], 404);
         }
         //----Check if area exists-----------------------
         $area = $request->input('area');
         $area_exists = Area::where('name', $area)->first();
         if (!isset($area_exists)) {
             return response()
-                ->json(['saved' => false, 'message' => "area does not exist"], 404);
+                ->json(['saved' => false, 'created_address' => null, 'message' => "area does not exist"], 404);
         }
         //----Create new Address----------------------------
         $address = new Address;
@@ -72,6 +72,6 @@ class AddressController extends Controller
         $check = $address->save();
 
         return response()
-            ->json(['saved' => true, 'created_address' => $address], 200);
+            ->json(['saved' => true, 'created_address' => $address, 'message' => "address created"], 200);
     }
 }
