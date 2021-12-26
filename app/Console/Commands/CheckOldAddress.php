@@ -13,7 +13,7 @@ class CheckOldAddress extends Command
      *
      * @var string
      */
-    protected $signature = 'command:check_old_daddress';
+    protected $signature = 'command:check_old_address';
 
     /**
      * The console command description.
@@ -40,12 +40,14 @@ class CheckOldAddress extends Command
     public function handle()
     {
         $cutoffTime = env('CHECK_OLD_ADDRESS');
-        if (isset($cutoffTime))
-            foreach (Address::where('isOld', false) as $address) {
+        if (isset($cutoffTime)) {
+            $addresses = Address::where('isOld', false)->get();
+            foreach ($addresses as $address) {
                 if (Carbon::parse($address['created_at'])->diffInMinutes(Carbon::now()) >= $cutoffTime) {
                     $address['isOld'] = true;
                     $address->save();
                 }
             }
+        }
     }
 }
