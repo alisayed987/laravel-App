@@ -20,7 +20,11 @@ class Address extends Model
         'floor',
         'apartment_num',
         'user_id',
-        'area_id'
+        'area_id',
+        'isOld'
+    ];
+    protected $casts = [
+        'isOld' => 'boolean'
     ];
 
     public function area()
