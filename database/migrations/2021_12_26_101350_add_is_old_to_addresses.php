@@ -26,6 +26,8 @@ class AddIsOldToAddresses extends Migration
     public function down()
     {
 
-        Schema::dropIfExists('addresses');
+        Schema::table('addresses', function (Blueprint $table) {
+            $table->dropColumn('isOld');
+        });
     }
 }

@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         // State::factory(5)->create();
         // City::factory(5)->create();
         // Area::factory(10)->create();
-        Address::call([UserSeeder::class]);
+        // Address::call([UserSeeder::class]);
         // $this->call([AddressSeeder::class]);
         // $this->call([
         //     UserSeeder::class,
