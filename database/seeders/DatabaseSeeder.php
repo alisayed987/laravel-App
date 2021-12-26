@@ -19,11 +19,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
-        State::factory(5)->create();
-        City::factory(5)->create();
-        Area::factory(10)->create();
-        Address::factory(5)->create();
+        // User::factory(10)->create();
+        // State::factory(5)->create();
+        // City::factory(5)->create();
+        // Area::factory(10)->create();
+        Address::factory(10)->create();
         // $this->call([AddressSeeder::class]);
         // $this->call([
         //     UserSeeder::class,
