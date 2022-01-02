@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     fetchData: function (user_id) {
-      axios.get("http://localhost/api/user/address/" + user_id).then((res) => {
+      axios.get("http://localhost:1234/api/user/address/" + user_id).then((res) => {
         this.user_addresses = res.data.address_list;
         console.log(this.user_addresses);
       });

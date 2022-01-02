@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('address/{address_id}', [AddressController::class, 'getAddress']);
+Route::get('/address/{address_id}', [AddressController::class, 'getAddress']);
 Route::get('/user/address/{user_id}', [AddressController::class, 'getUserAddresses']);
 Route::get('/deleteAddress/{address_id}', [AddressController::class, 'deleteAddress']);
 Route::post('/createAddress', [AddressController::class, 'createAddress']);
