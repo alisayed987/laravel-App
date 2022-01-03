@@ -7,9 +7,10 @@
                     class="form-control"
                     type="email"
                     placeholder="Email"
-                    name="user_email"
-                    id="user_email"
-                    v-model="email"
+                    name="email"
+                    id="email"
+                    ref="email"
+                    @input="updateUserAddress"
                 />
             </div>
         </div>
@@ -22,7 +23,8 @@
                     placeholder="Area"
                     name="area"
                     id="area"
-                    v-model="area"
+                    ref="area"
+                    @input="updateUserAddress"
                 />
             </div>
             <div class="col-6 form-group">
@@ -33,7 +35,8 @@
                     placeholder="Street"
                     name="street"
                     id="street"
-                    v-model="street"
+                    ref="street"
+                    @input="updateUserAddress"
                 />
             </div>
         </div>
@@ -46,7 +49,8 @@
                     placeholder="Building"
                     name="building"
                     id="building"
-                    v-model="building"
+                    ref="building"
+                    @input="updateUserAddress"
                 />
             </div>
             <div class="col-4 form-group">
@@ -57,7 +61,8 @@
                     placeholder="Floor"
                     name="floor"
                     id="floor"
-                    v-model="floor"
+                    ref="floor"
+                    @input="updateUserAddress"
                 />
             </div>
             <div class="col-4 form-group">
@@ -68,48 +73,64 @@
                     placeholder="Apartment Number"
                     name="apt"
                     id="apt"
-                    v-model="apt"
+                    ref="apt"
+                    @input="updateUserAddress"
                 />
             </div>
-            <button class="btn btn-primary" v-on:click="createAddress">
+            <button
+                ref="submit_button"
+                class="btn btn-primary"
+                v-on:click="createAddress"
+                disabled
+            >
                 Create Address
             </button>
-            <button class="btn btn-primary" v-on:click="logState">
-                log current state
-            </button>
-            <div>{{$store.getters.getUserState}}</div>
         </div>
     </div>
 </template>
 
 <script>
-import {useStore} from "vuex"
 export default {
     data() {
         return {
-            email: null,
-            area: null,
-            street: null,
-            building: null,
-            floor: null,
-            apt: null,
+            regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
         };
     },
-    methods:{
-      createAddress: function(){
-        const payload ={
-        email: this.email,
-        area: this.area,
-        street: this.street,
-        building: this.building,
-        floor: this.floor,
-        apt: this.apt,
-      }
-        this.$store.commit('setUserState',payload)
-        this.$store.dispatch('createAddress')
-        } ,
-      logState:function () {console.log(this.$store.getters.getUserState)}
-    }
+    computed: {
+        validate() {
+            this.$refs["email"].style =
+                "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);";
+            const add = this.$store.getters.getUserState;
+            if (add.email != "" && this.regexp.test(add.email)) {
+                this.$refs["email"].style =
+                    "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);";
+                if (add.email && add.area && add.street) {
+                    this.$refs["submit_button"].disabled = false;
+                } else {
+                }
+            }
+        },
+    },
+    methods: {
+        updateUserAddress(e) {
+            let payload = {};
+            payload[e.target.id] = e.target.value;
+            this.$store.commit("updateUserAddress", payload);
+            this.validate;
+        },
+        createAddress: function () {
+            this.$store.dispatch("createAddress").then((created) => {
+                if (created) {
+                    this.$refs["email"].value = "";
+                    this.$refs["area"].value = "";
+                    this.$refs["street"].value = "";
+                    this.$refs["building"].value = "";
+                    this.$refs["floor"].value = "";
+                    this.$refs["apt"].value = "";
+                }
+            });
+        },
+    },
 };
 </script>
 

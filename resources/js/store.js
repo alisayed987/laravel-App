@@ -1,87 +1,105 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios'
+import Vue from "vue";
+import Vuex from "vuex";
+import axios from "axios";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-  // state +++++++++++++++++++++++++++++
-	state: {
-		create_user_state:{
+    // state +++++++++++++++++++++++++++++
+    state: {
+        create_user_state: {
             email: null,
             area: null,
             street: null,
             building: null,
             floor: null,
             apt: null,
-          },
-    user_address_state:{
+        },
+        user_address_state: {
             user_id: null,
             user_addresses: undefined,
-            // del_add:null
-          }
-	},
-  // mutations +++++++++++++++++++++++++++
-	mutations: {
-    setUserState:function(state,payload){
-      state.create_user_state = payload
-      console.log(payload)
+        },
     },
-    setUserAddress:function(state,payload){
-      state.user_address_state.user_id = payload;
-      // state.user_address_state.user_addresses = 
-    },
-    setDeleteAddress: function(state,payload){
-      state.user_address_state.del_add = payload
-    }
-	},
-  // actions ++++++++++++++++++++++++++++
-  actions:{
-      fetchData: function () {
-        axios.get("http://localhost:1234/api/user/address/" + this.state.user_address_state.user_id).then((res) => {
-          this.state.user_address_state.user_addresses = res.data.address_list;
-          console.log(this.state.user_address_state.user_addresses);
-        });
-      },
-      // deleteAddress: function () {
-      //   if(this.state.user_address_state.del_add){
-      //     axios
-      //     .get("http://localhost:1234/api/deleteAddress/" + this.state.user_address_state.del_add)
-      //     .then((res) => {
-      //       alert(res.data.deleted);
-      //     });
-      //   console.log(address_id);
-      //   }
-        
-      // },
-      createAddress: function () {
-        // req header ------------------------
-        const headers = {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        };
-        // req body --------------------------
-        const req_body = {
-          email: this.state.create_user_state.email,
-          area: this.state.create_user_state.area,
-          street: this.state.create_user_state.street,
-          building: this.state.create_user_state.building,
-          floor: this.state.create_user_state.floor,
-          apt: this.state.create_user_state.apt,
-        };
-        console.log(JSON.stringify(req_body));
-        // send post req -----------------------
-        axios
-          .post("http://localhost:1234/api/createAddress", req_body, { headers })
-          .then((res) => {
-            if (res.data.saved == true) {
-              alert("address created");
+    // mutations +++++++++++++++++++++++++++
+    mutations: {
+        updateUserAddress(state, message) {
+            for (const key in message) {
+                this.state.create_user_state[key] = message[key];
             }
-          });
-      },
-  },
-  // getters ++++++++++++++++++++++++++++
-	getters: {
-    getUserState: state => state.create_user_state,
-	}
-})
+            console.log(this.state.create_user_state);
+        },
+        setUserAddress: function (state, payload) {
+            this.state.user_address_state.user_id = payload;
+            console.log(state.user_address_state.user_id);
+            // state.user_address_state.user_addresses =
+        },
+    },
+    // actions ++++++++++++++++++++++++++++
+    actions: {
+        fetchData: function () {
+            axios
+                .get(
+                    "http://localhost:1234/api/user/address/" +
+                        this.state.user_address_state.user_id
+                )
+                .then((res) => {
+                    if (res.status == 200) {
+                        this.state.user_address_state.user_addresses =
+                            res.data.address_list;
+                    }else if(res.status == 404){
+                      this.state.user_address_state.user_addresses =
+                            res.data.address_list;
+                            console.log("404444")
+                          alert("User does not exist");
+                    }
+                });
+        },
+        deleteAddress: function ({ commit, dispatch }, delete_id) {
+            if (delete_id) {
+                axios
+                    .get("http://localhost:1234/api/deleteAddress/" + delete_id)
+                    .then((res) => {
+                        alert(res.data.deleted);
+                        dispatch("fetchData");
+                    });
+            }
+        },
+        createAddress: function () {
+            // req header ------------------------
+            const headers = {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            };
+            const req_body = this.state.create_user_state;
+            console.log(JSON.stringify(req_body));
+            // send post req -----------------------
+
+            return new Promise((resolve, reject) => {
+                axios
+                    .post("http://localhost:1234/api/createAddress", req_body, {
+                        headers,
+                    })
+                    .then((res) => {
+                        if (res) {
+                            if (res.data.saved == true) {
+                                resolve(res.data.saved);
+                                this.state.create_user_state = {
+                                    email: null,
+                                    area: null,
+                                    street: null,
+                                    building: null,
+                                    floor: null,
+                                    apt: null,
+                                };
+                                alert(res.data.message)
+                            }
+                        }
+                    });
+            });
+        },
+    },
+    // getters ++++++++++++++++++++++++++++
+    getters: {
+        getUserState: (state) => state.create_user_state,
+    },
+});
