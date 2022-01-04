@@ -36,9 +36,10 @@ export default new Vuex.Store({
             for (const key in message) {
                 state.create_user_state[key] = message[key];
             }
+            console.log(state.create_user_state);
         },
         setFetchUserAddress: function (state, payload) {
-            state.user_address_state.user_id = payload;
+            state.user_address_state.user_id = payload.user_id;
         },
         setFetchedUserAdd: function (state, list) {
             state.user_address_state.user_addresses = list;
@@ -91,8 +92,8 @@ export default new Vuex.Store({
                         if (res) {
                             if (res.data.saved == true) {
                                 resolve(res.data.saved);
-                                commit("defaultCreateAddress");
                                 alert(res.data.message);
+                                commit("defaultCreateAddress");
                             }
                         }
                     })

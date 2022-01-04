@@ -2,68 +2,29 @@
     <div class="container">
         <div class="row">
             <div class="col form-group">
-                <label for="user_id">Email</label>
-                <input
-                    class="form-control"
-                    type="text"
-                    placeholder="User Id"
-                    name="user_id"
-                    id="user_id"
-                    v-model="userId"
-                />
+               
+                <label-input intype="email"
+                    info="user_id"
+                    store_state="user_address_state"
+                    storeState="setFetchUserAddress"/>
             </div>
             <button class="btn btn-primary" v-on:click="fetchData()">
                 Get Addresses
             </button>
         </div>
-        <div class="container">
-            <table>
-                <thead>
-                    <th>street</th>
-                    <th>building</th>
-                    <th>floor</th>
-                    <th>apartment</th>
-                    <th>delete</th>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="add in $store.state.user_address_state
-                            .user_addresses"
-                        :key="add.id"
-                    >
-                        <td>{{ add.street }}</td>
-                        <td>{{ add.building_num }}</td>
-                        <td>{{ add.floor }}</td>
-                        <td>{{ add.apartment_num }}</td>
-                        <td>
-                            <button
-                                class="btn btn-danger"
-                                v-on:click="deleteAddress(add.id)"
-                            >
-                                delete
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <table-component :table_heads="table_heads" />
     </div>
 </template>
 
 <script>
+import LabelInput from '../widgets/LabelInput.vue';
+import TableComponent from '../widgets/TableComponent.vue';
 export default {
+  components: { LabelInput, TableComponent },
     data() {
-        return {};
-    },
-    computed: {
-        userId: {
-            get() {
-                return this.$store.state.user_address_state.user_id;
-            },
-            set(value) {
-                this.$store.commit("setFetchUserAddress", value);
-            },
-        },
+        return {
+            table_heads:['street','building','floor','apartment','delete']
+        };
     },
     methods: {
         fetchData: function () {

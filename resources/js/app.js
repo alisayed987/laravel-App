@@ -4,6 +4,5 @@ import "bootstrap/dist/js/bootstrap"
 import Vue from "vue";
 import App from "./components/App.vue";
 
-
-    new Vue(App);
+new Vue(App);
 
