@@ -115,7 +115,7 @@ export default {
         updateUserAddress(e) {
             let payload = {};
             payload[e.target.id] = e.target.value;
-            this.$store.commit("updateUserAddress", payload);
+            this.$store.commit("updateCreateAddress", payload);
             this.validate;
         },
         createAddress: function () {

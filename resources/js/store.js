@@ -22,21 +22,31 @@ export default new Vuex.Store({
     },
     // mutations +++++++++++++++++++++++++++
     mutations: {
-        updateUserAddress(state, message) {
-            for (const key in message) {
-                this.state.create_user_state[key] = message[key];
-            }
-            console.log(this.state.create_user_state);
+        defaultCreateAddress(state, message) {
+            state.create_user_state = {
+                email: null,
+                area: null,
+                street: null,
+                building: null,
+                floor: null,
+                apt: null,
+            };
         },
-        setUserAddress: function (state, payload) {
-            this.state.user_address_state.user_id = payload;
-            console.log(state.user_address_state.user_id);
-            // state.user_address_state.user_addresses =
+        updateCreateAddress(state, message) {
+            for (const key in message) {
+                state.create_user_state[key] = message[key];
+            }
+        },
+        setFetchUserAddress: function (state, payload) {
+            state.user_address_state.user_id = payload;
+        },
+        setFetchedUserAdd: function (state, list) {
+            state.user_address_state.user_addresses = list;
         },
     },
     // actions ++++++++++++++++++++++++++++
     actions: {
-        fetchData: function () {
+        fetchData: function ({ commit }) {
             axios
                 .get(
                     "http://localhost:1234/api/user/address/" +
@@ -44,17 +54,14 @@ export default new Vuex.Store({
                 )
                 .then((res) => {
                     if (res.status == 200) {
-                        this.state.user_address_state.user_addresses =
-                            res.data.address_list;
-                    }else if(res.status == 404){
-                      this.state.user_address_state.user_addresses =
-                            res.data.address_list;
-                            console.log("404444")
-                          alert("User does not exist");
+                        commit("setFetchedUserAdd", res.data.address_list);
+                    } else if (res.status == 404) {
+                        commit("setFetchedUserAdd", []);
+                        alert("User does not exist");
                     }
                 });
         },
-        deleteAddress: function ({ commit, dispatch }, delete_id) {
+        deleteAddress: function ({ dispatch }, delete_id) {
             if (delete_id) {
                 axios
                     .get("http://localhost:1234/api/deleteAddress/" + delete_id)
@@ -70,10 +77,11 @@ export default new Vuex.Store({
                 "Content-Type": "application/json",
                 Accept: "application/json",
             };
-            const req_body = this.state.create_user_state;
-            console.log(JSON.stringify(req_body));
-            // send post req -----------------------
 
+            // req body ---------------------------
+            const req_body = this.state.create_user_state;
+
+            // send post req -----------------------
             return new Promise((resolve, reject) => {
                 axios
                     .post("http://localhost:1234/api/createAddress", req_body, {
@@ -83,18 +91,12 @@ export default new Vuex.Store({
                         if (res) {
                             if (res.data.saved == true) {
                                 resolve(res.data.saved);
-                                this.state.create_user_state = {
-                                    email: null,
-                                    area: null,
-                                    street: null,
-                                    building: null,
-                                    floor: null,
-                                    apt: null,
-                                };
-                                alert(res.data.message)
+                                commit("defaultCreateAddress");
+                                alert(res.data.message);
                             }
                         }
-                    });
+                    })
+                    .catch((err) => reject(err));
             });
         },
     },

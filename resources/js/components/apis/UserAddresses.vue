@@ -61,7 +61,7 @@ export default {
                 return this.$store.state.user_address_state.user_id;
             },
             set(value) {
-                this.$store.commit("setUserAddress", value);
+                this.$store.commit("setFetchUserAddress", value);
             },
         },
     },

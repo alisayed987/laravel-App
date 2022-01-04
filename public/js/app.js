@@ -5409,7 +5409,7 @@ __webpack_require__.r(__webpack_exports__);
     updateUserAddress: function updateUserAddress(e) {
       var payload = {};
       payload[e.target.id] = e.target.value;
-      this.$store.commit("updateUserAddress", payload);
+      this.$store.commit("updateCreateAddress", payload);
       this.validate;
     },
     createAddress: function createAddress() {
@@ -5504,7 +5504,7 @@ __webpack_require__.r(__webpack_exports__);
         return this.$store.state.user_address_state.user_id;
       },
       set: function set(value) {
-        this.$store.commit("setUserAddress", value);
+        this.$store.commit("setFetchUserAddress", value);
       }
     }
   },
@@ -5632,19 +5632,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.min.css */ "./node_modules/bootstrap/dist/css/bootstrap.min.css");
 /* harmony import */ var bootstrap_dist_js_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap/dist/js/bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.js");
 /* harmony import */ var bootstrap_dist_js_bootstrap__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_js_bootstrap__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _components_App_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/App.vue */ "./resources/js/components/App.vue");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./store */ "./resources/js/store.js");
 
 
 
 
 
-
-window.addEventListener("load", function () {
-  console.log("started");
-  new vue__WEBPACK_IMPORTED_MODULE_5__["default"](_components_App_vue__WEBPACK_IMPORTED_MODULE_3__["default"]);
-});
+new vue__WEBPACK_IMPORTED_MODULE_4__["default"](_components_App_vue__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
 /***/ }),
 
@@ -5727,36 +5722,43 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
   },
   // mutations +++++++++++++++++++++++++++
   mutations: {
-    updateUserAddress: function updateUserAddress(state, message) {
-      for (var key in message) {
-        this.state.create_user_state[key] = message[key];
-      }
-
-      console.log(this.state.create_user_state);
+    defaultCreateAddress: function defaultCreateAddress(state, message) {
+      state.create_user_state = {
+        email: null,
+        area: null,
+        street: null,
+        building: null,
+        floor: null,
+        apt: null
+      };
     },
-    setUserAddress: function setUserAddress(state, payload) {
-      this.state.user_address_state.user_id = payload;
-      console.log(state.user_address_state.user_id); // state.user_address_state.user_addresses =
+    updateCreateAddress: function updateCreateAddress(state, message) {
+      for (var key in message) {
+        state.create_user_state[key] = message[key];
+      }
+    },
+    setFetchUserAddress: function setFetchUserAddress(state, payload) {
+      state.user_address_state.user_id = payload;
+    },
+    setFetchedUserAdd: function setFetchedUserAdd(state, list) {
+      state.user_address_state.user_addresses = list;
     }
   },
   // actions ++++++++++++++++++++++++++++
   actions: {
-    fetchData: function fetchData() {
-      var _this = this;
-
+    fetchData: function fetchData(_ref) {
+      var commit = _ref.commit;
       axios__WEBPACK_IMPORTED_MODULE_0___default().get("http://localhost:1234/api/user/address/" + this.state.user_address_state.user_id).then(function (res) {
         if (res.status == 200) {
-          _this.state.user_address_state.user_addresses = res.data.address_list;
+          commit("setFetchedUserAdd", res.data.address_list);
         } else if (res.status == 404) {
-          _this.state.user_address_state.user_addresses = res.data.address_list;
-          console.log("404444");
+          commit("setFetchedUserAdd", []);
           alert("User does not exist");
         }
       });
     },
-    deleteAddress: function deleteAddress(_ref, delete_id) {
-      var commit = _ref.commit,
-          dispatch = _ref.dispatch;
+    deleteAddress: function deleteAddress(_ref2, delete_id) {
+      var dispatch = _ref2.dispatch;
 
       if (delete_id) {
         axios__WEBPACK_IMPORTED_MODULE_0___default().get("http://localhost:1234/api/deleteAddress/" + delete_id).then(function (res) {
@@ -5766,15 +5768,13 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
       }
     },
     createAddress: function createAddress() {
-      var _this2 = this;
-
       // req header ------------------------
       var headers = {
         "Content-Type": "application/json",
         Accept: "application/json"
-      };
-      var req_body = this.state.create_user_state;
-      console.log(JSON.stringify(req_body)); // send post req -----------------------
+      }; // req body ---------------------------
+
+      var req_body = this.state.create_user_state; // send post req -----------------------
 
       return new Promise(function (resolve, reject) {
         axios__WEBPACK_IMPORTED_MODULE_0___default().post("http://localhost:1234/api/createAddress", req_body, {
@@ -5783,17 +5783,12 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
           if (res) {
             if (res.data.saved == true) {
               resolve(res.data.saved);
-              _this2.state.create_user_state = {
-                email: null,
-                area: null,
-                street: null,
-                building: null,
-                floor: null,
-                apt: null
-              };
+              commit("defaultCreateAddress");
               alert(res.data.message);
             }
           }
+        })["catch"](function (err) {
+          return reject(err);
         });
       });
     }
