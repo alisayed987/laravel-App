@@ -23,6 +23,7 @@ export default new Vuex.Store({
     // mutations +++++++++++++++++++++++++++
     mutations: {
         defaultCreateAddress(state, message) {
+            console.log('state cleared')
             state.create_user_state = {
                 email: null,
                 area: null,
@@ -31,6 +32,7 @@ export default new Vuex.Store({
                 floor: null,
                 apt: null,
             };
+            console.log(state.create_user_state)
         },
         updateCreateAddress(state, message) {
             for (const key in message) {
@@ -72,7 +74,7 @@ export default new Vuex.Store({
                     });
             }
         },
-        createAddress: function () {
+        createAddress: function ({commit}) {
             // req header ------------------------
             const headers = {
                 "Content-Type": "application/json",
@@ -92,8 +94,8 @@ export default new Vuex.Store({
                         if (res) {
                             if (res.data.saved == true) {
                                 resolve(res.data.saved);
+                                // commit("defaultCreateAddress");
                                 alert(res.data.message);
-                                commit("defaultCreateAddress");
                             }
                         }
                     })
@@ -104,5 +106,6 @@ export default new Vuex.Store({
     // getters ++++++++++++++++++++++++++++
     getters: {
         getUserState: (state) => state.create_user_state,
+        getAddressesState: (state) => state.user_address_state
     },
 });

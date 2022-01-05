@@ -5362,11 +5362,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
+      email_regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
     };
   },
   components: {
@@ -5374,30 +5391,18 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     createAddress: function createAddress() {
-      var reset_flag = false;
-      this.$store.dispatch("createAddress"); // .then((created) => {
-      //     if (created) {
-      //         reset_flag=true
-      //         this.$refs["email"].value = "";
-      //         this.$refs["area"].value = "";
-      //         this.$refs["street"].value = "";
-      //         this.$refs["building"].value = "";
-      //         this.$refs["floor"].value = "";
-      //         this.$refs["apt"].value = "";
-      //     }
-      // });
+      var _this = this;
+
+      this.$store.dispatch("createAddress").then(function (created) {
+        if (created) {
+          _this.$store.commit("defaultCreateAddress");
+        }
+      });
     },
     validateEmail: function validateEmail() {
-      // e.style =
-      //     "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);";
-      // const add = this.$store.getters.getUserState;
-      // if (add.email != "" && this.regexp.test(add.email)) {
-      //     e.style =
-      //         "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);";
-      // }
       var add = this.$store.getters.getUserState;
 
-      if (add.email != "" && this.regexp.test(add.email)) {
+      if (add.email != "" && this.email_regexp.test(add.email)) {
         return false;
       } else {
         return true;
@@ -5439,6 +5444,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5448,15 +5456,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      table_heads: ['street', 'building', 'floor', 'apartment', 'delete']
+      table_heads: ['street', 'building_num', 'floor', 'apartment_num']
     };
   },
   methods: {
     fetchData: function fetchData() {
       this.$store.dispatch("fetchData");
-    },
-    deleteAddress: function deleteAddress(id) {
-      this.$store.dispatch("deleteAddress", id);
     }
   }
 });
@@ -5575,8 +5580,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-var _this = undefined;
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -5598,8 +5601,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      valid_flag: false
+    };
+  },
   props: {
     info: {
       type: String,
@@ -5613,9 +5622,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       type: String,
       required: true
     },
-    store_state: {
+    state_dir: {
       type: String,
       required: true
+    },
+    state_name_map: {
+      type: String
     },
     inValidate: {
       type: Function
@@ -5623,22 +5635,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     updateState: function updateState(e) {
-      if (this.inValidate) {
-        if (this.inValidate()) {
-          e.target.style = "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);";
-        } else {
-          e.target.style = "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);";
-        }
-      }
-
       var payload = {};
       payload[e.target.id] = e.target.value;
       this.$store.commit(this.storeState, payload);
+
+      if (this.inValidate) {
+        if (this.inValidate()) {
+          this.valid_flag = true; // e.target.style =
+          //     "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);";
+        } else {
+          this.valid_flag = false; // e.target.style =
+          //     "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);";
+        }
+      }
     }
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapState)({
-    invalue: function invalue(state) {
-      return state[_this.store_state][info];
+    'state': function state(_state) {
+      return _state[this.state_dir][this.state_name_map];
     }
   }))
 });
@@ -5682,15 +5696,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     table_heads: {
       type: Array,
       required: true
+    },
+    state_array: {
+      type: Array,
+      required: true
+    },
+    delete_action: {
+      type: String,
+      required: true
+    }
+  },
+  methods: {
+    deleteAddress: function deleteAddress(id) {
+      this.$store.dispatch(this.delete_action, id);
     }
   }
 });
@@ -5800,6 +5824,7 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
   // mutations +++++++++++++++++++++++++++
   mutations: {
     defaultCreateAddress: function defaultCreateAddress(state, message) {
+      console.log('state cleared');
       state.create_user_state = {
         email: null,
         area: null,
@@ -5808,6 +5833,7 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
         floor: null,
         apt: null
       };
+      console.log(state.create_user_state);
     },
     updateCreateAddress: function updateCreateAddress(state, message) {
       for (var key in message) {
@@ -5846,7 +5872,8 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
         });
       }
     },
-    createAddress: function createAddress() {
+    createAddress: function createAddress(_ref3) {
+      var commit = _ref3.commit;
       // req header ------------------------
       var headers = {
         "Content-Type": "application/json",
@@ -5861,9 +5888,9 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
         }).then(function (res) {
           if (res) {
             if (res.data.saved == true) {
-              resolve(res.data.saved);
+              resolve(res.data.saved); // commit("defaultCreateAddress");
+
               alert(res.data.message);
-              commit("defaultCreateAddress");
             }
           }
         })["catch"](function (err) {
@@ -5876,6 +5903,9 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
   getters: {
     getUserState: function getUserState(state) {
       return state.create_user_state;
+    },
+    getAddressesState: function getAddressesState(state) {
+      return state.user_address_state;
     }
   }
 }));
@@ -16108,6 +16138,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, "\n.bg-light {\n    background-color: #
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.valid{\nbox-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);\n}\n.invalid{\nbox-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/TableComponent.vue?vue&type=style&index=0&id=6eca80da&scoped=true&lang=css&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/TableComponent.vue?vue&type=style&index=0&id=6eca80da&scoped=true&lang=css& ***!
@@ -16592,6 +16646,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_NavBar_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_LabelInput_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./LabelInput.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_LabelInput_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_LabelInput_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -17122,15 +17206,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _LabelInput_vue_vue_type_template_id_45ba1f41___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LabelInput.vue?vue&type=template&id=45ba1f41& */ "./resources/js/components/widgets/LabelInput.vue?vue&type=template&id=45ba1f41&");
 /* harmony import */ var _LabelInput_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LabelInput.vue?vue&type=script&lang=js& */ "./resources/js/components/widgets/LabelInput.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _LabelInput_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./LabelInput.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _LabelInput_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _LabelInput_vue_vue_type_template_id_45ba1f41___WEBPACK_IMPORTED_MODULE_0__.render,
   _LabelInput_vue_vue_type_template_id_45ba1f41___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -17366,6 +17452,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_LabelInput_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader/dist/cjs.js!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./LabelInput.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/widgets/LabelInput.vue?vue&type=style&index=0&lang=css&");
+
+
+/***/ }),
+
 /***/ "./resources/js/components/widgets/TableComponent.vue?vue&type=style&index=0&id=6eca80da&scoped=true&lang=css&":
 /*!*********************************************************************************************************************!*\
   !*** ./resources/js/components/widgets/TableComponent.vue?vue&type=style&index=0&id=6eca80da&scoped=true&lang=css& ***!
@@ -17562,8 +17661,16 @@ var render = function () {
               intype: "email",
               info: "email",
               storeState: "updateCreateAddress",
-              store_state: "create_user_state",
+              state_dir: "create_user_state",
+              state_name_map: "email",
               inValidate: _vm.validateEmail,
+            },
+            model: {
+              value: _vm.$store.state.create_user_state.email,
+              callback: function ($$v) {
+                _vm.$set(_vm.$store.state.create_user_state, "email", $$v)
+              },
+              expression: "$store.state.create_user_state.email",
             },
           }),
         ],
@@ -17581,7 +17688,15 @@ var render = function () {
               intype: "text",
               info: "area",
               storeState: "updateCreateAddress",
-              store_state: "create_user_state",
+              state_dir: "create_user_state",
+              state_name_map: "area",
+            },
+            model: {
+              value: _vm.$store.state.create_user_state.area,
+              callback: function ($$v) {
+                _vm.$set(_vm.$store.state.create_user_state, "area", $$v)
+              },
+              expression: "$store.state.create_user_state.area",
             },
           }),
         ],
@@ -17597,7 +17712,15 @@ var render = function () {
               intype: "text",
               info: "street",
               storeState: "updateCreateAddress",
-              store_state: "create_user_state",
+              state_dir: "create_user_state",
+              state_name_map: "street",
+            },
+            model: {
+              value: _vm.$store.state.create_user_state.street,
+              callback: function ($$v) {
+                _vm.$set(_vm.$store.state.create_user_state, "street", $$v)
+              },
+              expression: "$store.state.create_user_state.street",
             },
           }),
         ],
@@ -17615,7 +17738,15 @@ var render = function () {
               intype: "text",
               info: "building",
               storeState: "updateCreateAddress",
-              store_state: "create_user_state",
+              state_dir: "create_user_state",
+              state_name_map: "building",
+            },
+            model: {
+              value: _vm.$store.state.create_user_state.building,
+              callback: function ($$v) {
+                _vm.$set(_vm.$store.state.create_user_state, "building", $$v)
+              },
+              expression: "$store.state.create_user_state.building",
             },
           }),
         ],
@@ -17631,7 +17762,15 @@ var render = function () {
               intype: "text",
               info: "floor",
               storeState: "updateCreateAddress",
-              store_state: "create_user_state",
+              state_dir: "create_user_state",
+              state_name_map: "floor",
+            },
+            model: {
+              value: _vm.$store.state.create_user_state.floor,
+              callback: function ($$v) {
+                _vm.$set(_vm.$store.state.create_user_state, "floor", $$v)
+              },
+              expression: "$store.state.create_user_state.floor",
             },
           }),
         ],
@@ -17647,7 +17786,15 @@ var render = function () {
               intype: "text",
               info: "apt",
               storeState: "updateCreateAddress",
-              store_state: "create_user_state",
+              state_dir: "create_user_state",
+              state_name_map: "apt",
+            },
+            model: {
+              value: _vm.$store.state.create_user_state.apt,
+              callback: function ($$v) {
+                _vm.$set(_vm.$store.state.create_user_state, "apt", $$v)
+              },
+              expression: "$store.state.create_user_state.apt",
             },
           }),
         ],
@@ -17702,7 +17849,8 @@ var render = function () {
               attrs: {
                 intype: "email",
                 info: "user_id",
-                store_state: "user_address_state",
+                state_dir: "user_address_state",
+                state_name_map: "user_id",
                 storeState: "setFetchUserAddress",
               },
             }),
@@ -17724,7 +17872,15 @@ var render = function () {
         ),
       ]),
       _vm._v(" "),
-      _c("table-component", { attrs: { table_heads: _vm.table_heads } }),
+      _c("table-component", {
+        attrs: {
+          table_heads: _vm.table_heads,
+          state_array: _vm.$store.state.user_address_state.user_addresses
+            ? _vm.$store.state.user_address_state.user_addresses
+            : [],
+          delete_action: "deleteAddress",
+        },
+      }),
     ],
     1
   )
@@ -17916,13 +18072,18 @@ var render = function () {
     _vm._v(" "),
     _c("input", {
       ref: _vm.info,
-      staticClass: "form-control",
+      class: {
+        "form-control": true,
+        valid: _vm.valid_flag,
+        invalid: !_vm.valid_flag,
+      },
       attrs: {
         type: _vm.intype,
         placeholder: _vm.info,
         name: _vm.info,
         id: _vm.info,
       },
+      domProps: { value: _vm.state },
       on: { input: _vm.updateState },
     }),
   ])
@@ -17954,25 +18115,22 @@ var render = function () {
     _c("table", [
       _c(
         "thead",
-        _vm._l(_vm.table_heads, function (h, index) {
-          return _c("th", { key: index }, [_vm._v(_vm._s(h))])
+        _vm._l(_vm.table_heads, function (head, index) {
+          return _c("th", { key: index }, [_vm._v(_vm._s(head))])
         }),
         0
       ),
       _vm._v(" "),
       _c(
         "tbody",
-        _vm._l(
-          _vm.$store.state.user_address_state.user_addresses,
-          function (add) {
-            return _c("tr", { key: add.id }, [
-              _c("td", [_vm._v(_vm._s(add.street))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(add.building_num))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(add.floor))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(add.apartment_num))]),
+        _vm._l(_vm.state_array, function (item) {
+          return _c(
+            "tr",
+            { key: item.id },
+            [
+              _vm._l(_vm.table_heads, function (head, index) {
+                return _c("td", { key: index }, [_vm._v(_vm._s(item[head]))])
+              }),
               _vm._v(" "),
               _c("td", [
                 _c(
@@ -17981,7 +18139,7 @@ var render = function () {
                     staticClass: "btn btn-danger",
                     on: {
                       click: function ($event) {
-                        return _vm.deleteAddress(add.id)
+                        return _vm.deleteAddress(item.id)
                       },
                     },
                   },
@@ -17992,9 +18150,10 @@ var render = function () {
                   ]
                 ),
               ]),
-            ])
-          }
-        ),
+            ],
+            2
+          )
+        }),
         0
       ),
     ]),

@@ -5,14 +5,17 @@
                
                 <label-input intype="email"
                     info="user_id"
-                    store_state="user_address_state"
-                    storeState="setFetchUserAddress"/>
+                    state_dir="user_address_state"
+                    state_name_map="user_id"
+                    storeState="setFetchUserAddress"
+                    
+                    />
             </div>
             <button class="btn btn-primary" v-on:click="fetchData()">
                 Get Addresses
             </button>
         </div>
-        <table-component :table_heads="table_heads" />
+        <table-component :table_heads="table_heads" :state_array="($store.state.user_address_state.user_addresses)?$store.state.user_address_state.user_addresses:[]" delete_action="deleteAddress"/>
     </div>
 </template>
 
@@ -23,15 +26,12 @@ export default {
   components: { LabelInput, TableComponent },
     data() {
         return {
-            table_heads:['street','building','floor','apartment','delete']
+            table_heads:['street','building_num','floor','apartment_num'],
         };
     },
     methods: {
         fetchData: function () {
             this.$store.dispatch("fetchData");
-        },
-        deleteAddress: function (id) {
-            this.$store.dispatch("deleteAddress", id);
         },
     },
 };

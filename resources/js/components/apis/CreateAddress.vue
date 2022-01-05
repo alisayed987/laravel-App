@@ -6,8 +6,10 @@
                     intype="email"
                     info="email"
                     storeState="updateCreateAddress"
-                    store_state="create_user_state"
+                    state_dir="create_user_state"
+                    state_name_map="email"
                     :inValidate="validateEmail"
+                    v-model="$store.state.create_user_state.email"
                 />
             </div>
         </div>
@@ -17,7 +19,10 @@
                     intype="text"
                     info="area"
                     storeState="updateCreateAddress"
-                    store_state="create_user_state"
+                    state_dir="create_user_state"
+                    state_name_map="area"
+                    v-model="$store.state.create_user_state.area"
+
                 />
             </div>
             <div class="col-6 form-group">
@@ -25,7 +30,10 @@
                     intype="text"
                     info="street"
                     storeState="updateCreateAddress"
-                    store_state="create_user_state"
+                    state_dir="create_user_state"
+                    state_name_map="street"
+                    v-model="$store.state.create_user_state.street"
+
                 />
             </div>
         </div>
@@ -35,7 +43,10 @@
                     intype="text"
                     info="building"
                     storeState="updateCreateAddress"
-                    store_state="create_user_state"
+                    state_dir="create_user_state"
+                    state_name_map="building"
+                    v-model="$store.state.create_user_state.building"
+
                 />
             </div>
             <div class="col-4 form-group">
@@ -43,7 +54,10 @@
                     intype="text"
                     info="floor"
                     storeState="updateCreateAddress"
-                    store_state="create_user_state"
+                    state_dir="create_user_state"
+                    state_name_map="floor"
+                    v-model="$store.state.create_user_state.floor"
+
                 />
             </div>
             <div class="col-4 form-group">
@@ -51,7 +65,10 @@
                     intype="text"
                     info="apt"
                     storeState="updateCreateAddress"
-                    store_state="create_user_state"
+                    state_dir="create_user_state"
+                    state_name_map="apt"
+                    v-model="$store.state.create_user_state.apt"
+
                 />
             </div>
             <button
@@ -70,37 +87,22 @@ import LabelInput from "../widgets/LabelInput.vue";
 export default {
     data() {
         return {
-            regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
+            email_regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
         };
     },
     components: { LabelInput },
     methods: {
         createAddress: function () {
-            let reset_flag = false;
-            this.$store.dispatch("createAddress");
-            // .then((created) => {
-            //     if (created) {
-            //         reset_flag=true
-            //         this.$refs["email"].value = "";
-            //         this.$refs["area"].value = "";
-            //         this.$refs["street"].value = "";
-            //         this.$refs["building"].value = "";
-            //         this.$refs["floor"].value = "";
-            //         this.$refs["apt"].value = "";
-            //     }
-            // });
+            this.$store.dispatch("createAddress")
+            .then((created) => {
+                if (created) {
+                    this.$store.commit("defaultCreateAddress")
+                }
+            });
         },
         validateEmail() {
-            // e.style =
-            //     "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);";
-            // const add = this.$store.getters.getUserState;
-            // if (add.email != "" && this.regexp.test(add.email)) {
-            //     e.style =
-            //         "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);";
-
-            // }
             const add = this.$store.getters.getUserState;
-            if (add.email != "" && this.regexp.test(add.email)) {
+            if (add.email != "" && this.email_regexp.test(add.email)) {
                 return false;
             } else {
                 return true;

@@ -2,22 +2,18 @@
   <div class="container">
             <table>
                 <thead>
-                    <th v-for="(h,index) in table_heads" :key="index">{{h}}</th>
+                    <th v-for="(head,index) in table_heads" :key="index">{{head}}</th>
                 </thead>
                 <tbody>
                     <tr
-                        v-for="add in $store.state.user_address_state
-                            .user_addresses"
-                        :key="add.id"
+                        v-for="(item) in state_array"
+                        :key="item.id"
                     >
-                        <td>{{ add.street }}</td>
-                        <td>{{ add.building_num }}</td>
-                        <td>{{ add.floor }}</td>
-                        <td>{{ add.apartment_num }}</td>
+                        <td v-for="(head,index) in table_heads" :key="index">{{ item[head] }}</td>
                         <td>
                             <button
                                 class="btn btn-danger"
-                                v-on:click="deleteAddress(add.id)"
+                                v-on:click="deleteAddress(item.id)"
                             >
                                 delete
                             </button>
@@ -29,9 +25,20 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
+    
 props:{
-    table_heads:{type:Array,required:true}}
+    table_heads:{type:Array,required:true},
+    state_array:{type:Array,required:true},
+    delete_action:{type:String,required:true}
+    },
+    methods:{
+        deleteAddress: function (id) {
+            this.$store.dispatch(this.delete_action, id);
+        }
+    }
+    
 }
 </script>
 
