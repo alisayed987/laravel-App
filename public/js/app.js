@@ -5294,14 +5294,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _widgets_LabelInput_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widgets/LabelInput.vue */ "./resources/js/components/widgets/LabelInput.vue");
-//
-//
-//
-//
-//
-//
-//
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -5380,35 +5380,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      email_regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
+      email_regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
+      flag: false
     };
   },
   components: {
     LabelInput: _widgets_LabelInput_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  methods: {
-    createAddress: function createAddress() {
-      var _this = this;
-
-      this.$store.dispatch("createAddress").then(function (created) {
-        if (created) {
-          _this.$store.commit("defaultCreateAddress");
-        }
-      });
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapMutations)(["updateCreateAddress", "defaultCreateAddress"])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)(["createAddress"])), {}, {
+    updateCreateAddressState: function updateCreateAddressState(ininput) {
+      this.updateCreateAddress(ininput);
     },
     validateEmail: function validateEmail() {
       var add = this.$store.getters.getUserState;
 
       if (add.email != "" && this.email_regexp.test(add.email)) {
+        this.flag = true;
         return false;
       } else {
+        this.flag = false;
         return true;
       }
+    },
+    submitForm: function submitForm() {
+      var created = this.createAddress();
+      if (created) this.defaultCreateAddress();
     }
-  }
+  }),
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)(["create_user_state"]))
 });
 
 /***/ }),
@@ -5424,8 +5427,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _widgets_LabelInput_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widgets/LabelInput.vue */ "./resources/js/components/widgets/LabelInput.vue");
 /* harmony import */ var _widgets_TableComponent_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widgets/TableComponent.vue */ "./resources/js/components/widgets/TableComponent.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -5447,6 +5457,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5456,14 +5469,18 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      table_heads: ['street', 'building_num', 'floor', 'apartment_num']
+      table_heads: ["street", "building_num", "floor", "apartment_num"]
     };
   },
-  methods: {
-    fetchData: function fetchData() {
-      this.$store.dispatch("fetchData");
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)(["fetchData", "deleteAddress"])), (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapMutations)(["setFetchUserAddress"])), {}, {
+    userIdFunc: function userIdFunc(ininput) {
+      this.setFetchUserAddress(ininput);
+    },
+    deleteAddressFunc: function deleteAddressFunc(id) {
+      this.deleteAddress(id);
     }
-  }
+  }),
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapState)(["user_address_state"]))
 });
 
 /***/ }),
@@ -5579,13 +5596,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -5602,11 +5612,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      valid_flag: false
+      instate: null,
+      valid_flag: true
     };
   },
   props: {
@@ -5614,20 +5625,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       type: String,
       required: true
     },
-    storeState: {
-      type: String,
-      required: true
-    },
     intype: {
       type: String,
       required: true
     },
-    state_dir: {
-      type: String,
-      required: true
-    },
-    state_name_map: {
+    state: {
       type: String
+    },
+    stateFunc: {
+      type: Function
     },
     inValidate: {
       type: Function
@@ -5637,24 +5643,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     updateState: function updateState(e) {
       var payload = {};
       payload[e.target.id] = e.target.value;
-      this.$store.commit(this.storeState, payload);
+      this.stateFunc(payload);
 
       if (this.inValidate) {
         if (this.inValidate()) {
-          this.valid_flag = true; // e.target.style =
-          //     "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);";
+          this.valid_flag = false;
         } else {
-          this.valid_flag = false; // e.target.style =
-          //     "box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);";
+          this.valid_flag = true;
         }
       }
     }
   },
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapState)({
-    'state': function state(_state) {
-      return _state[this.state_dir][this.state_name_map];
-    }
-  }))
+  computed: {}
 });
 
 /***/ }),
@@ -5694,9 +5694,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     table_heads: {
@@ -5704,17 +5701,15 @@ __webpack_require__.r(__webpack_exports__);
       required: true
     },
     state_array: {
-      type: Array,
-      required: true
+      type: Array
     },
-    delete_action: {
-      type: String,
-      required: true
+    deleteItemFunc: {
+      type: Function
     }
   },
   methods: {
     deleteAddress: function deleteAddress(id) {
-      this.$store.dispatch(this.delete_action, id);
+      this.deleteItemFunc(id);
     }
   }
 });
@@ -5824,7 +5819,6 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
   // mutations +++++++++++++++++++++++++++
   mutations: {
     defaultCreateAddress: function defaultCreateAddress(state, message) {
-      console.log('state cleared');
       state.create_user_state = {
         email: null,
         area: null,
@@ -5833,14 +5827,11 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
         floor: null,
         apt: null
       };
-      console.log(state.create_user_state);
     },
     updateCreateAddress: function updateCreateAddress(state, message) {
       for (var key in message) {
         state.create_user_state[key] = message[key];
       }
-
-      console.log(state.create_user_state);
     },
     setFetchUserAddress: function setFetchUserAddress(state, payload) {
       state.user_address_state.user_id = payload.user_id;
@@ -5856,10 +5847,10 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
       axios__WEBPACK_IMPORTED_MODULE_0___default().get("http://localhost:1234/api/user/address/" + this.state.user_address_state.user_id).then(function (res) {
         if (res.status == 200) {
           commit("setFetchedUserAdd", res.data.address_list);
-        } else if (res.status == 404) {
-          commit("setFetchedUserAdd", []);
-          alert("User does not exist");
         }
+      })["catch"](function (e) {
+        commit("setFetchedUserAdd", []);
+        alert("User does not exist");
       });
     },
     deleteAddress: function deleteAddress(_ref2, delete_id) {
@@ -5867,8 +5858,10 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
 
       if (delete_id) {
         axios__WEBPACK_IMPORTED_MODULE_0___default().get("http://localhost:1234/api/deleteAddress/" + delete_id).then(function (res) {
-          alert(res.data.deleted);
+          if (res.data.deleted) alert("deleted");
           dispatch("fetchData");
+        })["catch"](function (e) {
+          alert("not deleted");
         });
       }
     },
@@ -5888,13 +5881,13 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2_
         }).then(function (res) {
           if (res) {
             if (res.data.saved == true) {
-              resolve(res.data.saved); // commit("defaultCreateAddress");
-
+              resolve(res.data.saved);
               alert(res.data.message);
             }
           }
         })["catch"](function (err) {
-          return reject(err);
+          reject(err);
+          alert("wrong input");
         });
       });
     }
@@ -16059,7 +16052,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-1ce949cd] {\n    max-width: 50%;\n}\n.btn[data-v-1ce949cd] {\n    margin: 20px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-1ce949cd] {\n  max-width: 50%;\n}\n.btn[data-v-1ce949cd] {\n  margin: 20px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -16083,7 +16076,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-c30651e8] {\n    max-width: 50%;\n}\n.btn[data-v-c30651e8] {\n    margin: 20px;\n}\ntable[data-v-c30651e8] {\n    float: left;\n}\ntable[data-v-c30651e8],\nth[data-v-c30651e8],\ntd[data-v-c30651e8] {\n    border: 1px solid black;\n    padding: 10px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-c30651e8] {\n  max-width: 50%;\n}\n.btn[data-v-c30651e8] {\n  margin: 20px;\n}\ntable[data-v-c30651e8] {\n  float: left;\n}\ntable[data-v-c30651e8],\nth[data-v-c30651e8],\ntd[data-v-c30651e8] {\n  border: 1px solid black;\n  padding: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -16155,7 +16148,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.valid{\nbox-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(255, 100, 255, 0.5);\n}\n.invalid{\nbox-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(97, 160, 253, 0.5);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.valid {\n  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset,\n    0px 0px 8px rgba(255, 100, 255, 0.5);\n}\n.invalid {\n  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset,\n    0px 0px 8px rgba(97, 160, 253, 0.5);\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -16179,7 +16172,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-6eca80da] {\n    max-width: 50%;\n}\n.btn[data-v-6eca80da] {\n    margin: 20px;\n}\ntable[data-v-6eca80da] {\n    float: left;\n}\ntable[data-v-6eca80da],\nth[data-v-6eca80da],\ntd[data-v-6eca80da] {\n    border: 1px solid black;\n    padding: 10px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-6eca80da] {\n  max-width: 50%;\n}\n.btn[data-v-6eca80da] {\n  margin: 20px;\n}\ntable[data-v-6eca80da] {\n  float: left;\n}\ntable[data-v-6eca80da],\nth[data-v-6eca80da],\ntd[data-v-6eca80da] {\n  border: 1px solid black;\n  padding: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -17660,17 +17653,9 @@ var render = function () {
             attrs: {
               intype: "email",
               info: "email",
-              storeState: "updateCreateAddress",
-              state_dir: "create_user_state",
-              state_name_map: "email",
+              state: _vm.create_user_state.email,
+              stateFunc: _vm.updateCreateAddressState,
               inValidate: _vm.validateEmail,
-            },
-            model: {
-              value: _vm.$store.state.create_user_state.email,
-              callback: function ($$v) {
-                _vm.$set(_vm.$store.state.create_user_state, "email", $$v)
-              },
-              expression: "$store.state.create_user_state.email",
             },
           }),
         ],
@@ -17687,16 +17672,8 @@ var render = function () {
             attrs: {
               intype: "text",
               info: "area",
-              storeState: "updateCreateAddress",
-              state_dir: "create_user_state",
-              state_name_map: "area",
-            },
-            model: {
-              value: _vm.$store.state.create_user_state.area,
-              callback: function ($$v) {
-                _vm.$set(_vm.$store.state.create_user_state, "area", $$v)
-              },
-              expression: "$store.state.create_user_state.area",
+              state: _vm.create_user_state.area,
+              stateFunc: _vm.updateCreateAddressState,
             },
           }),
         ],
@@ -17711,16 +17688,8 @@ var render = function () {
             attrs: {
               intype: "text",
               info: "street",
-              storeState: "updateCreateAddress",
-              state_dir: "create_user_state",
-              state_name_map: "street",
-            },
-            model: {
-              value: _vm.$store.state.create_user_state.street,
-              callback: function ($$v) {
-                _vm.$set(_vm.$store.state.create_user_state, "street", $$v)
-              },
-              expression: "$store.state.create_user_state.street",
+              state: _vm.create_user_state.street,
+              stateFunc: _vm.updateCreateAddressState,
             },
           }),
         ],
@@ -17737,16 +17706,8 @@ var render = function () {
             attrs: {
               intype: "text",
               info: "building",
-              storeState: "updateCreateAddress",
-              state_dir: "create_user_state",
-              state_name_map: "building",
-            },
-            model: {
-              value: _vm.$store.state.create_user_state.building,
-              callback: function ($$v) {
-                _vm.$set(_vm.$store.state.create_user_state, "building", $$v)
-              },
-              expression: "$store.state.create_user_state.building",
+              state: _vm.create_user_state.building,
+              stateFunc: _vm.updateCreateAddressState,
             },
           }),
         ],
@@ -17761,16 +17722,8 @@ var render = function () {
             attrs: {
               intype: "text",
               info: "floor",
-              storeState: "updateCreateAddress",
-              state_dir: "create_user_state",
-              state_name_map: "floor",
-            },
-            model: {
-              value: _vm.$store.state.create_user_state.floor,
-              callback: function ($$v) {
-                _vm.$set(_vm.$store.state.create_user_state, "floor", $$v)
-              },
-              expression: "$store.state.create_user_state.floor",
+              state: _vm.create_user_state.floor,
+              stateFunc: _vm.updateCreateAddressState,
             },
           }),
         ],
@@ -17785,16 +17738,8 @@ var render = function () {
             attrs: {
               intype: "text",
               info: "apt",
-              storeState: "updateCreateAddress",
-              state_dir: "create_user_state",
-              state_name_map: "apt",
-            },
-            model: {
-              value: _vm.$store.state.create_user_state.apt,
-              callback: function ($$v) {
-                _vm.$set(_vm.$store.state.create_user_state, "apt", $$v)
-              },
-              expression: "$store.state.create_user_state.apt",
+              state: _vm.create_user_state.apt,
+              stateFunc: _vm.updateCreateAddressState,
             },
           }),
         ],
@@ -17805,11 +17750,22 @@ var render = function () {
         "button",
         {
           ref: "submit_button",
-          staticClass: "btn btn-primary",
-          on: { click: _vm.createAddress },
+          class: {
+            btn: true,
+            "btn-primary": true,
+            disabled: !(
+              _vm.create_user_state.email &&
+              _vm.create_user_state.area &&
+              _vm.create_user_state.street &&
+              _vm.flag
+            ),
+          },
+          on: { click: _vm.submitForm },
         },
-        [_vm._v("\n            Create Address\n        ")]
+        [_vm._v("\n      Create Address\n    ")]
       ),
+      _vm._v(" "),
+      _c("div"),
     ]),
   ])
 }
@@ -17847,11 +17803,10 @@ var render = function () {
           [
             _c("label-input", {
               attrs: {
-                intype: "email",
+                intype: "text",
                 info: "user_id",
-                state_dir: "user_address_state",
-                state_name_map: "user_id",
-                storeState: "setFetchUserAddress",
+                state: _vm.user_address_state.user_id,
+                stateFunc: _vm.userIdFunc,
               },
             }),
           ],
@@ -17868,17 +17823,15 @@ var render = function () {
               },
             },
           },
-          [_vm._v("\n            Get Addresses\n        ")]
+          [_vm._v("\n      Get Addresses\n    ")]
         ),
       ]),
       _vm._v(" "),
       _c("table-component", {
         attrs: {
           table_heads: _vm.table_heads,
-          state_array: _vm.$store.state.user_address_state.user_addresses
-            ? _vm.$store.state.user_address_state.user_addresses
-            : [],
-          delete_action: "deleteAddress",
+          state_array: _vm.user_address_state.user_addresses,
+          deleteItemFunc: _vm.deleteAddressFunc,
         },
       }),
     ],
@@ -18074,14 +18027,15 @@ var render = function () {
       ref: _vm.info,
       class: {
         "form-control": true,
-        valid: _vm.valid_flag,
-        invalid: !_vm.valid_flag,
+        valid: !_vm.valid_flag,
+        invalid: _vm.valid_flag,
       },
       attrs: {
         type: _vm.intype,
         placeholder: _vm.info,
         name: _vm.info,
         id: _vm.info,
+        "v-model": _vm.instate,
       },
       domProps: { value: _vm.state },
       on: { input: _vm.updateState },
@@ -18116,7 +18070,9 @@ var render = function () {
       _c(
         "thead",
         _vm._l(_vm.table_heads, function (head, index) {
-          return _c("th", { key: index }, [_vm._v(_vm._s(head))])
+          return _c("th", { key: index }, [
+            _vm._v("\n        " + _vm._s(head) + "\n      "),
+          ])
         }),
         0
       ),
@@ -18129,27 +18085,27 @@ var render = function () {
             { key: item.id },
             [
               _vm._l(_vm.table_heads, function (head, index) {
-                return _c("td", { key: index }, [_vm._v(_vm._s(item[head]))])
+                return _c("td", { key: index }, [
+                  _vm._v("\n          " + _vm._s(item[head]) + "\n        "),
+                ])
               }),
               _vm._v(" "),
-              _c("td", [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-danger",
-                    on: {
-                      click: function ($event) {
-                        return _vm.deleteAddress(item.id)
+              _vm.deleteItemFunc
+                ? _c("td", [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        on: {
+                          click: function ($event) {
+                            return _vm.deleteAddress(item.id)
+                          },
+                        },
                       },
-                    },
-                  },
-                  [
-                    _vm._v(
-                      "\n                              delete\n                          "
+                      [_vm._v("\n            delete\n          ")]
                     ),
-                  ]
-                ),
-              ]),
+                  ])
+                : _vm._e(),
             ],
             2
           )

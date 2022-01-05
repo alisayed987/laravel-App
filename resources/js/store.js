@@ -23,7 +23,6 @@ export default new Vuex.Store({
     // mutations +++++++++++++++++++++++++++
     mutations: {
         defaultCreateAddress(state, message) {
-            console.log('state cleared')
             state.create_user_state = {
                 email: null,
                 area: null,
@@ -32,13 +31,11 @@ export default new Vuex.Store({
                 floor: null,
                 apt: null,
             };
-            console.log(state.create_user_state)
         },
         updateCreateAddress(state, message) {
             for (const key in message) {
                 state.create_user_state[key] = message[key];
             }
-            console.log(state.create_user_state);
         },
         setFetchUserAddress: function (state, payload) {
             state.user_address_state.user_id = payload.user_id;
@@ -58,10 +55,11 @@ export default new Vuex.Store({
                 .then((res) => {
                     if (res.status == 200) {
                         commit("setFetchedUserAdd", res.data.address_list);
-                    } else if (res.status == 404) {
-                        commit("setFetchedUserAdd", []);
-                        alert("User does not exist");
                     }
+                })
+                .catch((e) => {
+                    commit("setFetchedUserAdd", []);
+                    alert("User does not exist");
                 });
         },
         deleteAddress: function ({ dispatch }, delete_id) {
@@ -69,12 +67,15 @@ export default new Vuex.Store({
                 axios
                     .get("http://localhost:1234/api/deleteAddress/" + delete_id)
                     .then((res) => {
-                        alert(res.data.deleted);
+                        if (res.data.deleted) alert("deleted");
                         dispatch("fetchData");
+                    })
+                    .catch((e) => {
+                        alert("not deleted");
                     });
             }
         },
-        createAddress: function ({commit}) {
+        createAddress: function ({ commit }) {
             // req header ------------------------
             const headers = {
                 "Content-Type": "application/json",
@@ -94,18 +95,20 @@ export default new Vuex.Store({
                         if (res) {
                             if (res.data.saved == true) {
                                 resolve(res.data.saved);
-                                // commit("defaultCreateAddress");
                                 alert(res.data.message);
                             }
                         }
                     })
-                    .catch((err) => reject(err));
+                    .catch((err) => {
+                        reject(err);
+                        alert("wrong input");
+                    });
             });
         },
     },
     // getters ++++++++++++++++++++++++++++
     getters: {
         getUserState: (state) => state.create_user_state,
-        getAddressesState: (state) => state.user_address_state
+        getAddressesState: (state) => state.user_address_state,
     },
 });
