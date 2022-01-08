@@ -20,11 +20,11 @@
 
     </head>
     <body>
-        {{-- @livewire('globals.nav-bar') --}}
-        @livewire('user-addresses')
+        @livewire('globals.nav-bar')
+        {{-- @livewire('user-addresses') --}}
         {{-- @livewire('create-address') --}}
-        {{-- @livewire('globals.footer-bar') --}}
-        {{-- {{$slot}} --}}
+        {{$slot}}
+        @livewire('globals.footer-bar')
 
         @livewireScripts
 
