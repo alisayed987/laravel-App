@@ -1,4 +1,6 @@
 <div>
+    @csrf
+
     <label
     for={{$info}}
     >{{$info}}</label>

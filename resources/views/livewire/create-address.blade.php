@@ -52,7 +52,7 @@
                 ],key('apartment'))
             </div>
         </div>
-        <button class="btn btn-primary mt-3 {{$btn_state}}" wire:click="submit">show</button>
+        <button class="btn btn-primary mt-3" wire:click="submit">show</button>
 
     </div>
 
