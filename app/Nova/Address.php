@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use App\Nova\Filters\IsOld;
+use App\Nova\Filters\UserId;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasOne;
@@ -46,7 +47,7 @@ class Address extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make('street')->sortable(),
-            Text::make('buidling_num')->sortable(),
+            Text::make('building_num')->sortable(),
             Text::make('floor')->sortable(),
             Text::make('apartment_num')->sortable(),
             BelongsTo::make('Area')->sortable()->display(function(){
@@ -76,7 +77,8 @@ class Address extends Resource
     public function filters(Request $request)
     {
         return [
-            new IsOld
+            new IsOld,
+            new UserId
         ];
     }
 

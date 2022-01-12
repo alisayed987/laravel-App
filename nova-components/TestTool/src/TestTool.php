@@ -3,10 +3,10 @@
 namespace Vus\TestTool;
 
 use App\Nova\Filters\IsOld;
+use App\Nova\Filters\UserId;
 use Illuminate\Http\Request;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Tool;
-use Vus\Filtery\Filtery;
 
 class TestTool extends Tool
 {
@@ -34,7 +34,9 @@ class TestTool extends Tool
     public function filters(Request $request)
     {
         return [
-            new Filtery
+            new IsOld,
+            new UserId
         ];
     }
+   
 }

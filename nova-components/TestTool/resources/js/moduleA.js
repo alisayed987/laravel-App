@@ -1,14 +1,13 @@
-// import Vue from "vue";
-// import Vuex from "vuex";
-
-// Vue.use(Vuex);
-
+import {encoder,tableArray} from './helpers.js'
 export default {
     state: {
         user_id: 0,
         user_addresses: [],
         pattern: "",
-        isOld: null
+        isOld: null,
+        count:-1,
+        per_page:3,
+        current_page:1,
     },
     mutations: {
         idUpdate: function(state, id) {
@@ -22,38 +21,54 @@ export default {
         },
         isOldUpdate: function(state, val) {
             state.isOld = val;
+        },
+        currentPageUpdate: function(state,val){
+            state.current_page=val;
+            dispatchEvent
         }
     },
     actions: {
         fetchAddresses: function(context) {
-            console.log(context.state.isOld);
-            let x = `[{"class":"App\\\\Nova\\\\Filters\\\\IsOld","value":{"isOld":"${context.state.isOld}","id":${context.state.user_id}}}]`;
-            let encoded_filter = btoa(x);
-            console.log(encoded_filter);
-            Nova.request(
-                `http://localhost:1234/nova-api/addresses?search=${context.state.pattern}&filters=${encoded_filter}&orderBy=&perPage=25&trashed=&page=1&relationshipType=`
-            )
+            const classes = {
+                'App\\Nova\\Filters\\IsOld': context.state.isOld,
+                'App\\Nova\\Filters\\UserId':context.state.user_id
+            }
+            const encoded_filter = encoder(classes)
+            const params = {
+                search:context.state.pattern,
+                filters:encoded_filter,
+                orderBy:'',
+                perPage:context.state.per_page,
+                trashed:'',
+                page:context.state.current_page,
+                relationshipType:''
+            }
+            Nova.request().get(
+                'http://localhost:1234/nova-api/addresses'
+            ,{params})
                 .then(result => {
-                    const data = result.data.resources; //array of objects {attribute,value}
-                    let temp_arr = [];
-                    data.forEach(element => {
-                        const fields = element["fields"]; //arr
-                        let temp_obj = {};
-                        fields.forEach(ele => {
-                            temp_obj[ele["attribute"]] = ele["value"];
-                        });
-                        temp_arr.push(temp_obj);
-                    });
-                    context.commit("addressesUpdate", temp_arr);
-                    console.log(temp_arr);
+                    const organised_arr = tableArray(result.data.resources); 
+                    context.commit("addressesUpdate", organised_arr);
                 })
                 .catch(err => {
                     throw err;
                 });
+            Nova.request().get(
+                'http://localhost:1234/nova-api/addresses/count'
+            ,{params})
+            .then(result => {
+                context.state.count = result.data.count;
+            })
+            .catch(err => {
+                throw err;
+            });
         }
     },
     getters: {
         getId: state => state.user_id,
-        getUserAddresses: state => state.user_addresses
+        getUserAddresses: state => state.user_addresses,
+        getPages: state=> {
+            return Math.ceil(state.count/state.per_page)
+        }
     }
 };

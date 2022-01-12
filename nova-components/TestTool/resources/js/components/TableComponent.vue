@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <table>
       <thead>
         <th v-for="(head, index) in table_heads" :key="index">

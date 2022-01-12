@@ -5,7 +5,7 @@ namespace App\Nova\Filters;
 use Illuminate\Http\Request;
 use Laravel\Nova\Filters\Filter;
 
-class IsOld extends Filter
+class UserId extends Filter
 {
     /**
      * The filter's component.
@@ -24,7 +24,8 @@ class IsOld extends Filter
      */
     public function apply(Request $request, $query, $value)
     {
-        return $query->where('isOld',$value);
+        
+        return $query->where('user_id',$value);
     }
 
     /**
@@ -35,9 +36,6 @@ class IsOld extends Filter
      */
     public function options(Request $request)
     {
-        return [
-            "isOld"=>'0',
-            "new"=>'1'
-        ];
+        return [];
     }
 }

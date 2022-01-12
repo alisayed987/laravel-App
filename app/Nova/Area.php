@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Vus\ResTool\ResTool;
 
 class Area extends Resource
 {
@@ -49,7 +50,7 @@ class Area extends Resource
                 return $this->city->name;
             }),
             HasMany::make('Addresses')->sortable(),
-            // ResTool::make()
+            ResTool::make()
         ];
     }
 

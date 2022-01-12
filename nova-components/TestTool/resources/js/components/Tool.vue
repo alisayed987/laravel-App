@@ -1,33 +1,38 @@
 <template>
   <div class="container">
     <heading class="mb-6">Test Tool</heading>
-
+    <div class="row">
+      <label-input
+          intype="text"
+          info="user_id"
+          :state="user_id"
+          :stateFunc="updateUserId"
+        />
+    </div>
     <div class="row">
       <div class="col-6">
-        <input
-          type="text"
-          name="user_id"
-          id="user_id"
-          v-model="user_id"
-          placeholder="user id"
+      <label-input
+          intype="text"
+          info="search"
+          :state="pattern"
+          :stateFunc="updatePattern"
         />
+
       </div>
       <div class="col-6">
-        <select class="form-select" v-model="isOld" aria-label="Isold">
+        <label for="isOld">isOld</label>
+        <select class="form-select" v-model="isOld" aria-label="isOld">
           <option selected>-</option>
           <option value="1">isOld</option>
           <option value="0">new</option>
         </select>
       </div>
     </div>
+    
     <div class="row">
-      <input
-        type="text"
-        name="search"
-        id="search"
-        v-model="pattern"
-        placeholder="search"
-      />
+      <button class="btn btn-default btn-primary" @click="submit">
+        Get Addresses
+      </button>
     </div>
     <div class="row">
       <div class="col">
@@ -38,10 +43,16 @@
       </div>
     </div>
     <div class="row">
-      <button class="btn btn-default btn-primary" @click="submit">
-        Get Addresses
-      </button>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+          
+          <li class="page-item" v-for="index in getPages" :key="index"><a class="page-link" @click="updateCurrentPage(index)">{{index}}</a></li>
+          
+          
+        </ul>
+      </nav>
     </div>
+    
   </div>
 </template>
 <script>
@@ -54,10 +65,11 @@ export default {
       user_addresses: [],
       pattern: "",
       isOld: null,
+      pages:0
     };
   },
   methods: {
-    ...mapMutations(["idUpdate", "patternUpdate", "isOldUpdate"]),
+    ...mapMutations(["idUpdate", "patternUpdate", "isOldUpdate","currentPageUpdate"]),
     ...mapActions(["fetchAddresses"]),
     submit() {
       if (this.isOld === "-") {
@@ -69,9 +81,19 @@ export default {
       this.patternUpdate(this.pattern);
       this.fetchAddresses();
     },
+    updateUserId(input){
+      this.user_id = input['user_id']
+    },
+    updatePattern(input){
+      this.pattern = input['search']
+    },
+    updateCurrentPage(page){
+      this.currentPageUpdate(page)
+      this.fetchAddresses()
+    }
   },
   computed: {
-    ...mapGetters(["getId", "getUserAddresses"]),
+    ...mapGetters(["getId", "getUserAddresses","getPages"]),
   },
 };
 </script>
