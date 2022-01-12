@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\IsOld;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasOne;
@@ -31,7 +32,7 @@ class Address extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'street',
     ];
 
     /**
@@ -74,7 +75,9 @@ class Address extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new IsOld
+        ];
     }
 
     /**

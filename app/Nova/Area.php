@@ -48,7 +48,8 @@ class Area extends Resource
             BelongsTo::make('City')->sortable()->display(function(){
                 return $this->city->name;
             }),
-            HasMany::make('Addresses')->sortable()
+            HasMany::make('Addresses')->sortable(),
+            // ResTool::make()
         ];
     }
 
@@ -60,7 +61,8 @@ class Area extends Resource
      */
     public function cards(Request $request)
     {
-        return [];
+        return [
+        ];
     }
 
     /**
@@ -71,7 +73,8 @@ class Area extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+        ];
     }
 
     /**
