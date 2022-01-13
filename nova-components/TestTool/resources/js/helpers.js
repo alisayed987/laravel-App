@@ -4,8 +4,6 @@ function encoder(objy){
         collect.push({"class":key,"value":objy[key]})
     }
     let encoded = btoa(JSON.stringify(collect));
-    console.log(JSON.stringify(collect))
-    console.log(encoded)
     return encoded;
 }
 
@@ -24,5 +22,3 @@ function tableArray(array){
 
 module.exports.encoder = encoder;
 module.exports.tableArray = tableArray;
-
-[{"class":"","value":"0"},{"class":"","value":""}]
