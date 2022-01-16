@@ -29,10 +29,10 @@ class Address extends Model
 
     public function area()
     {
-        return $this->belongsTo('App\Model\Area');
+        return $this->belongsTo('App\Models\Area');
     }
     public function user()
     {
-        return $this->belongsTo('App\Model\User');
+        return $this->belongsTo('App\Models\User');
     }
 }

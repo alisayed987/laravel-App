@@ -22,7 +22,8 @@ class AddressSeeder extends Seeder
             'floor' => Str::random(10),
             'apartment_num' => Str::random(10),
             'user_id' => rand(1, 3),
-            'area_id' => rand(1, 3)
+            'area_id' => rand(1, 3),
+            'isOld' => 1
         ]);
     }
 }

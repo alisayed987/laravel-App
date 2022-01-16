@@ -2,16 +2,25 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.3|^8.0.1|^7.2.5",
+        "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.65",
+        "laravel/nova": "*",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.4"
+        "laravel/ui": "^3.4",
+        "livewire/livewire": "^2.8",
+        "vus/test-tool": "*",
+        "vus/res-tool": "*"
+        
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -58,6 +67,20 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./nova"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/TestTool"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/ResTool"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }

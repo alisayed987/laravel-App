@@ -7,7 +7,15 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "build-test-tool": "cd nova-components/TestTool && npm run dev",
+        "build-test-tool-prod": "cd nova-components/TestTool && npm run prod",
+        "build-filtery": "cd nova-components/Filtery && npm run dev",
+        "build-filtery-prod": "cd nova-components/Filtery && npm run prod",
+        "build-res-tool": "cd nova-components/ResTool && npm run dev",
+        "build-res-tool-prod": "cd nova-components/ResTool && npm run prod",
+        "build-custom-card": "cd nova-components/CustomCard && npm run dev",
+        "build-custom-card-prod": "cd nova-components/CustomCard && npm run prod"
     },
     "devDependencies": {
         "@popperjs/core": "^2.10.2",
@@ -18,12 +26,13 @@
         "postcss": "^8.1.14",
         "resolve-url-loader": "^3.1.2",
         "sass": "^1.32.11",
-        "sass-loader": "^11.0.1",
+        "sass-loader": "^10.1.1",
         "vue": "^2.6.12",
         "vue-loader": "^15.9.8",
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "node-sass": "^6.0.1",
         "vue": "^2.6.14",
         "vue-router": "^3.5.3",
         "vuex": "^3.6.2"
