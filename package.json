@@ -15,7 +15,9 @@
         "build-res-tool": "cd nova-components/ResTool && npm run dev",
         "build-res-tool-prod": "cd nova-components/ResTool && npm run prod",
         "build-custom-card": "cd nova-components/CustomCard && npm run dev",
-        "build-custom-card-prod": "cd nova-components/CustomCard && npm run prod"
+        "build-custom-card-prod": "cd nova-components/CustomCard && npm run prod",
+        "build-container-tool": "cd nova-components/ContainerTool && npm run dev",
+        "build-container-tool-prod": "cd nova-components/ContainerTool && npm run prod"
     },
     "devDependencies": {
         "@popperjs/core": "^2.10.2",
